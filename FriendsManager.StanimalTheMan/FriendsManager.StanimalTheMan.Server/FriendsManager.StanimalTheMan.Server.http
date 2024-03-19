@@ -1,0 +1,6 @@
+@FriendsManager.StanimalTheMan.Server_HostAddress = http://localhost:5006
+
+GET {{FriendsManager.StanimalTheMan.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
