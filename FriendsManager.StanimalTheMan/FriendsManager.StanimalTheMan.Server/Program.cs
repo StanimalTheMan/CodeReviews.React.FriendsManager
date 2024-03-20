@@ -1,4 +1,6 @@
 using FriendsManager.StanimalTheMan.Server.Data;
+using FriendsManager.StanimalTheMan.Server.Repositories;
+using FriendsManager.StanimalTheMan.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<FriendsManagerDbContext>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
