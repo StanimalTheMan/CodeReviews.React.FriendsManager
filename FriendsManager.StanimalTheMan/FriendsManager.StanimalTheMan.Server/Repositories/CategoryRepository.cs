@@ -25,15 +25,15 @@ public class CategoryRepository : ICategoryRepository
         {
             try
             {
-                _context.Friends.RemoveRange(category.Friends);
+                _context.Friends.RemoveRange(category.Friends); // probably unnecessary since I have an ON DELETE CASCADE constraint in db context setup
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
 
-                transaction.Commit();
+                await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 throw new Exception("Error deleting category and friends.", ex);
             }
         }
