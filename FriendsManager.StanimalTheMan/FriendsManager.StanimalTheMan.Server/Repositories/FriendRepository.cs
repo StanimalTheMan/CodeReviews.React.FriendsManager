@@ -30,21 +30,8 @@ public class FriendRepository : IFriendRepository
 
     public async Task DeleteFriendAsync(Friend friend)
     {
-        using (var transaction = _context.Database.BeginTransaction())
-        {
-            try
-            {
-                _context.Friends.Remove(friend);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                throw new Exception("Error deleting friend.", ex);
-            }
-        }
+        _context.Friends.Remove(friend);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Friend>> GetAllFriendsAsync()

@@ -6,22 +6,22 @@ namespace FriendsManager.StanimalTheMan.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CategoryController : Controller
+public class FriendController : Controller
 {
-    private readonly ICategoryService _categoryService;
+    private readonly IFriendService _friendService;
 
-    public CategoryController(ICategoryService categoryService)
+    public FriendController(IFriendService friendService)
     {
-        _categoryService = categoryService;
+        _friendService = friendService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+    public async Task<ActionResult<IEnumerable<Friend>>> GetFriends()
     {
         try
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
-            return Ok(categories);
+            var friends = await _friendService.GetAllFriendsAsync();
+            return Ok(friends);
         }
         catch (Exception ex)
         {
@@ -30,17 +30,17 @@ public class CategoryController : Controller
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Category>> GetCategoryById(int id)
+    public async Task<ActionResult<Friend>> GetFriendById(int id)
     {
         try
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
-            if (category == null)
+            var friend = await _friendService.GetFriendByIdAsync(id);
+            if (friend == null)
             {
                 return NotFound();
             }
 
-            return Ok(category);
+            return Ok(friend);
         }
         catch (Exception ex)
         {
@@ -49,12 +49,16 @@ public class CategoryController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<Category>> AddCategory(Category category)
+    public async Task<ActionResult<Friend>> AddFriend(Friend friend)
     {
         try
         {
-            await _categoryService.AddCategoryAsync(category);
-            return CreatedAtAction(nameof(GetCategoryById), new { id = category.CategoryID }, category);
+            await _friendService.AddFriendAsync(friend);
+            return CreatedAtAction(nameof(GetFriendById), new { id = friend.FriendID }, friend);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -63,19 +67,23 @@ public class CategoryController : Controller
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(int id, Category category)
+    public async Task<IActionResult> UpdateFriend(int id, Friend friend)
     {
-        if (id != category.CategoryID)
+        if (id != friend.FriendID)
         {
-            return BadRequest("Category ID mismatch");
+            return BadRequest("Friend ID mismatch");
         }
 
         try
         {
-            await _categoryService.UpdateCategoryAsync(category);
+            await _friendService.UpdateFriendAsync(friend);
             return NoContent();
         }
         catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (InvalidOperationException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -86,17 +94,17 @@ public class CategoryController : Controller
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCategory(int id)
+    public async Task<IActionResult> DeleteFriend(int id)
     {
         try
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
-            if (category == null)
+            var friend = await _friendService.GetFriendByIdAsync(id);
+            if (friend == null)
             {
                 return NotFound();
             }
 
-            await _categoryService.DeleteCategoryAndFriendsAsync(category);
+            await _friendService.DeleteFriendAsync(friend);
             return NoContent();
         }
         catch (Exception ex)
